@@ -1,7 +1,7 @@
 import json
 import os
 
-default_path = 'c:\NatLink\NatLink\MacroSystem\grammar_config.json'
+default_path = 'c:\NatLink\NatLink\MacroSystem\grammar_config\grammar_config.json'
 loaded_config = None
 
 

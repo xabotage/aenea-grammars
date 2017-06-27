@@ -22,12 +22,19 @@ grammar = dragonfly.Grammar('chrome', context=chrome_context)
 
 window_mapping = {
     # Tab navigation
-    'page (previous|left)': Key("cs-tab"),
-    'page (next|right)': Key("c-tab"),
+    '(track|trek)': Key("cs-tab"),
+    '(track|trek) <n>': Key("cs-tab:%(n)d"),
+    'trite': Key("c-tab"),
+    'trite <n>': Key("c-tab:%(n)d"),
+    'page left': Key("cs-tab"),
+    'page left <n>': Key("cs-tab:%(n)d"),
+    'page right': Key("c-tab"),
+    'page right <n>': Key("c-tab:%(n)d"),
     'page <n>': Key("c-%(n)d"),
     'page new': Key("c-t"),
     'page reopen': Key("cs-t"),
     'page close': Key("c-w"),
+    'screw this': Key("c-w"),
     'page back': Key("s-h"),
     'page forward': Key("s-l"),
     'refresh': Key("r"),
@@ -46,6 +53,10 @@ window_mapping = {
     'find <text>': Key("escape, slash") + Text("%(text)s") + Key("enter"),
     'next': Key("n"),
     'prev|previous': Key("N"),
+
+    #  Miscellaneous
+    'address': Key("c-l"),
+    'address <text>': Key("c-l") + Text("%(text)s"),
 }
 
 gmail_mapping = {
