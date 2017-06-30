@@ -285,7 +285,7 @@ if static_code_insertions:
     primitive_insertions.append(
         RuleRef(
             MappingRule(
-                'static vim.insertions,code mapping',
+                'static vim.insertions.code mapping',
                 mapping=aenea.vocabulary.get_static_vocabulary('vim.insertions.code')
                 ),
             'static vim.insertions.code'
@@ -561,11 +561,14 @@ class PrimitiveCommand(MappingRule):
     mapping = {
         'vim scratch': Key('X'),
         'vim chuck': Key('x'),
-        'vim undo': Key('u'),
+        '(vim undo | whoops)': Key('u'),
+        'vim redo': Key('c-r'),
         'plap': Key('P'),
         'plop': Key('p'),
         'ditto': Text('.'),
         'ripple': 'macro',
+        'layout': Key('g,t'), # Move forward a tab or go to specified tab
+        'backout': Key('g,T'), # Move backward the specified number of tabs
         }
 rulePrimitiveCommand = RuleRef(PrimitiveCommand(), name='PrimitiveCommand')
 
@@ -605,6 +608,24 @@ class Command(CompoundRule):
 ruleCommand = RuleRef(Command(), name='Command')
 
 
+# ****************************************************************************
+# SESSION
+# ****************************************************************************
+
+class BufferCommand(MappingRule):
+    mapping = {
+            'save': Key('colon, w, enter'),
+            'really save': Key('colon, w, exclamation, enter'),
+            'save all': Key('colon, w, a, enter'),
+            'quit': Key('colon, q, enter'),
+            'really quit': Key('colon, q, exclamation, enter'),
+            'quit all': Key('colon, q, a, enter'),
+            'suspend': Key('colon, s, u, s, enter'),
+            'buff next': Key('colon, b, n, enter'),
+            'buff back': Key('colon, b, p, enter'),
+            'buff list': Key('colon, l, s, enter'),
+            #'buff <count>': Key('colon') + Text('b %(count)d\n'),
+            }
 # ****************************************************************************
 
 
