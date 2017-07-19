@@ -86,7 +86,7 @@ def execute_insertion_buffer(insertion_buffer):
     if insertion_buffer[0][0] is not None:
         insertion_buffer[0][0].execute()
     else:
-        Key('a').execute()
+        Key('a').execute() # is this necessary?
 
     for insertion in insertion_buffer:
         insertion[1].execute()
@@ -104,6 +104,7 @@ class InsertModeEntry(MappingRule):
         'syn': Key('a'),
         'phyllo': Key('o'),
         'phyhigh': Key('O'),
+        'finder': Key('slash'),
         }
 ruleInsertModeEntry = RuleRef(InsertModeEntry(), name='InsertModeEntry')
 
@@ -421,6 +422,14 @@ class UncountedMotion(MappingRule):
 ruleUncountedMotion = RuleRef(UncountedMotion(), name='UncountedMotion')
 
 
+class SearchMotion(MappingRule):
+    mapping = {
+            'next': Text('n'),
+            'preeve': Text('N'),
+            }
+ruleSearchMotion = RuleRef(SearchMotion(), name='SearchMotion')
+
+
 class MotionParameterMotion(MappingRule):
     mapping = {
         'phytic': 'f',
@@ -452,7 +461,8 @@ class CountedMotion(NumericDelegateRule):
     extras = [ruleDigitalInteger[3],
               Alternative([
                   rulePrimitiveMotion,
-                  ruleParameterizedMotion], name='motion')]
+                  ruleParameterizedMotion,
+                  ruleSearchMotion], name='motion')]
 ruleCountedMotion = RuleRef(CountedMotion(), name='CountedMotion')
 
 
@@ -624,20 +634,51 @@ class BufferCommand(MappingRule):
             'buff next': Key('colon, b, n, enter'),
             'buff back': Key('colon, b, p, enter'),
             'buff list': Key('colon, l, s, enter'),
-            #'buff <count>': Key('colon') + Text('b %(count)d\n'),
+            'buff <count>': Key('colon') + Text('b %(count)d\n'),
+            'buff close': Key('colon') + Text('Bclose\n'),
             }
+    extras = [ruleDigitalInteger[3]]
+
+class SplitCommand(MappingRule):
+    mapping = {
+            # Vertical or horizontal split
+            'hotdog': Key('colon, v, s, enter'),
+            'hamburger': Key('colon, s, p, enter'),
+            # Go to split right, left, up, down when proper key bindings are set in vimrc
+            'sprite': Key('c-l'),
+            'splat': Key('c-h'),
+            'slup': Key('c-k'),
+            'sloan': Key('c-j'),
+            }
+
+class SearchCommand(MappingRule):
+    mapping = {
+            'search this': Key('asterisk'),
+            'search this up': Key('hash'),
+            }
+    extras = [ruleIdentifierInsertion]
+
 # ****************************************************************************
 
 
 class VimCommand(CompoundRule):
-    spec = ('[<app>] [<literal>]')
-    extras = [Repetition(Alternative([ruleCommand, RuleRef(Insertion())]), max=10, name='app'),
-              RuleRef(LiteralIdentifierInsertion(), name='literal')]
+    spec = ('([<app>] [<literal>] | [<session>])')
+    extras = [
+            Repetition(Alternative([ruleCommand, RuleRef(Insertion())]), max=10, name='app'),
+            RuleRef(LiteralIdentifierInsertion(), name='literal'),
+            Alternative([
+                  RuleRef(BufferCommand()),
+                  RuleRef(SplitCommand()),
+                  RuleRef(SearchCommand()),
+                ], name='session')
+              ]
 
     def _process_recognition(self, node, extras):
-        print "Recognizing vim command"
         insertion_buffer = []
         commands = []
+        if 'session' in extras:
+            extras['session'].execute()
+            return
         if 'app' in extras:
             for chunk in extras['app']:
                 commands.extend(chunk)

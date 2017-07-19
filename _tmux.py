@@ -1,7 +1,7 @@
 # Created for aenea using libraries from the Dictation Toolbox
 # https://github.com/dictation-toolbox/dragonfly-scripts
 #
-# Commands for interacting with Git
+# Commands for interacting with tmux
 #
 # Author: Tony Grosinger
 #
