@@ -79,19 +79,25 @@ class LetterMapping(MappingRule):
 ruleLetterMapping = RuleRef(LetterMapping(), name='LetterMapping')
 
 
+non_canceling_entries = ('slash', 'question', 'shift')
 def execute_insertion_buffer(insertion_buffer):
     if not insertion_buffer:
         return
 
-    if insertion_buffer[0][0] is not None:
-        insertion_buffer[0][0].execute()
+    mode_entry = insertion_buffer[0][0]
+    skip_escape = False
+    if mode_entry is not None:
+        mode_entry.execute()
+        if mode_entry._spec in non_canceling_entries:
+            skip_escape = True # Skip insertion mode exit
     else:
-        Key('a').execute() # is this necessary?
+        Key('a').execute()
 
     for insertion in insertion_buffer:
         insertion[1].execute()
 
-    Key('escape:2').execute()
+    if not skip_escape:
+        Key('escape:2').execute()
 
 # ****************************************************************************
 # IDENTIFIERS
@@ -105,6 +111,8 @@ class InsertModeEntry(MappingRule):
         'phyllo': Key('o'),
         'phyhigh': Key('O'),
         'finder': Key('slash'),
+        'refinder': Key('question'),
+        'nicked': Key('shift'), # Placeholder for no-op, will not impact insertion
         }
 ruleInsertModeEntry = RuleRef(InsertModeEntry(), name='InsertModeEntry')
 

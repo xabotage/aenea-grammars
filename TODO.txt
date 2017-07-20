@@ -1,11 +1,11 @@
 to do:
 x Implement session controls such as suspend, buffer, and tab controls
 x Implement search functionality
-- Implement window manager
+x Implement window manager
+- Make phytic and fitton work with all character types
 - Learn and integrate tmux grammar
 - Implement nerd tree grammar
 - Implement mark system in vim
-- Make phytic and fitton work with all character types
 - Learn and integrate better git grammar
 - Investigate and/or learn python grammar
 - Implement visual selection mode
