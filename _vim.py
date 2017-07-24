@@ -79,6 +79,14 @@ class LetterMapping(MappingRule):
 ruleLetterMapping = RuleRef(LetterMapping(), name='LetterMapping')
 
 
+allCharacterMapping = aenea.misc.ALPHANUMERIC.copy()
+for (char, value) in aenea.vocabulary.register_dynamic_vocabulary('vim.insertions').iteritems():
+    allCharacterMapping.update({char: value._spec})
+class AllCharMapping(MappingRule):
+    mapping = allCharacterMapping
+ruleAllCharacterMapping = RuleRef(AllCharMapping(), 'AllCharacter')
+
+
 non_canceling_entries = ('slash', 'question', 'shift')
 def execute_insertion_buffer(insertion_buffer):
     if not insertion_buffer:
@@ -452,12 +460,12 @@ ruleMotionParameterMotion = RuleRef(
 
 
 class ParameterizedMotion(CompoundRule):
-    spec = '<MotionParameterMotion> <LetterMapping>'
-    extras = [ruleLetterMapping, ruleMotionParameterMotion]
+    spec = '<MotionParameterMotion> <AllCharacter>'
+    extras = [ruleAllCharacterMapping, ruleMotionParameterMotion]
 
     def value(self, node):
         children = node.children[0].children[0].children
-        return Text(children[0].value() + children[1].value())
+        return Text(children[0].value()) + Key(children[1].value())
 ruleParameterizedMotion = RuleRef(
     ParameterizedMotion(),
     name='ParameterizedMotion'
@@ -579,14 +587,14 @@ class PrimitiveCommand(MappingRule):
     mapping = {
         'vim scratch': Key('X'),
         'vim chuck': Key('x'),
-        '(vim undo | whoops)': Key('u'),
+        '(vim undo | oops)': Key('u'),
         'vim redo': Key('c-r'),
         'plap': Key('P'),
         'plop': Key('p'),
         'ditto': Text('.'),
         'ripple': 'macro',
-        'layout': Key('g,t'), # Move forward a tab or go to specified tab
-        'backout': Key('g,T'), # Move backward the specified number of tabs
+        'trite': Key('g,t'), # Move forward a tab or go to specified tab
+        '(track | trek)': Key('g,T'), # Move backward the specified number of tabs
         }
 rulePrimitiveCommand = RuleRef(PrimitiveCommand(), name='PrimitiveCommand')
 

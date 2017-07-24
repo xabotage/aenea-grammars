@@ -42,7 +42,8 @@ class DashCommand(MappingRule):
 	mapping = {
 			'alt [<text>]': Key('alt') + Text('%(text)s'),
 			'launch': Key('win'),
-			'launch app <n>': Key('w-%(n)d/15'),
+			# Press and release shift as workaround for xdotool bug.
+			'app <n>': Key('win:down, shift:down, shift:up, %(n)d, win:up'),
 			}
 	extras = [
         IntegerRef('n', 0, 9),
@@ -77,7 +78,6 @@ class UnityCommand(CompoundRule):
 	]
 
 	def _process_recognition(self, node, extras):
-		print ''
 		if extras['desktop'] is not None:
 			extras['desktop'].execute()
 

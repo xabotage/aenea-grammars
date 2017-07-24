@@ -19,6 +19,7 @@ import dragonfly
 
 chrome_context = aenea.ProxyCustomAppContext(executable="/opt/google/chrome/chrome")
 grammar = dragonfly.Grammar('chrome', context=chrome_context)
+ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 2)
 
 window_mapping = {
     # Tab navigation
@@ -43,7 +44,11 @@ window_mapping = {
 
     #  Moving around
     'more': Key("j:10"),
+    'much more': Key("j:20"),
+    'more <count>': Key("j:%(count)d"),
     'less': Key("k:10"),
+    'much less': Key("k:20"),
+    'less <count>': Key("k:%(count)d"),
     'top': Key("g, g"),
     'bottom': Key("s-g"),
     'back': Key("s-h"),
@@ -51,6 +56,7 @@ window_mapping = {
 
     #  Searching
     'find <text>': Key("escape, slash") + Text("%(text)s") + Key("enter"),
+    'find': Key("escape, slash"),
     'next': Key("n"),
     'prev|previous': Key("N"),
 
@@ -75,7 +81,9 @@ class Mapping(dragonfly.MappingRule):
     extras = [
         IntegerRef('n', 1, 99),
         Dictation('text'),
+        ruleDigitalInteger,
     ]
+    defaults = {'count': 1}
 
 class MappingMail(dragonfly.MappingRule):
      mapping = gmail_mapping
