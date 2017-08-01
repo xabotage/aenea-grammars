@@ -453,6 +453,7 @@ class MotionParameterMotion(MappingRule):
         'fitton': 'F',
         'pre phytic': 't',
         'pre fitton': 'T',
+        'marker': '\'', # TODO: make this only work with letters
         }
 ruleMotionParameterMotion = RuleRef(
     MotionParameterMotion(),
@@ -675,6 +676,13 @@ class SearchCommand(MappingRule):
             }
     extras = [ruleIdentifierInsertion]
 
+class MarkCommand(MappingRule):
+    mapping = {
+            'bookmark <LetterMapping>': Key('m') + Text('%(LetterMapping)s'),
+            }
+    extras = [ruleLetterMapping]
+
+
 # ****************************************************************************
 
 
@@ -687,6 +695,7 @@ class VimCommand(CompoundRule):
                   RuleRef(BufferCommand()),
                   RuleRef(SplitCommand()),
                   RuleRef(SearchCommand()),
+                  RuleRef(MarkCommand()),
                 ], name='session')
               ]
 
