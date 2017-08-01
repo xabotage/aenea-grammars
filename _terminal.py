@@ -9,6 +9,7 @@
 
 import aenea
 import aenea.configuration
+from aenea.proxy_contexts import ProxyAppContext
 from aenea.lax import Key, Text
 import dragonfly
 try:
@@ -17,8 +18,11 @@ except ImportError:
     print 'Unable to import Aenea client-side modules.'
     raise
 
-terminal_context = aenea.ProxyPlatformContext('linux')
-grammar = dragonfly.Grammar('terminal', context=terminal_context)
+terminal_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
+#terminal_context = aenea.ProxyPlatformContext('linux')
+vim_context = ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True)
+grammar = dragonfly.Grammar('terminal', context=(terminal_context & ~vim_context))
+ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 3)
 
 terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     # Terminal commands
@@ -39,12 +43,27 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     '(pseudo|sudo|pseudo-)': Text("sudo "),
     '(apt|app) get': Text("sudo apt-get "),
     '(apt|app) get install': Text("sudo apt-get install "),
+
+    'grep': Text("grep "),
+    'ack grep': Text("ack-grep "),
+    'cat': Text("cat "),
+    'pipe [into]': Text(" | "),
+    'edit': Text("vim "),
+    'tea mucks': Text("tmux "),
+
+    'proc list': Text("ps -e\n"),
+    'jobs': Text("jobs\n"),
+    'resume': Text("fg\n"),
+    'resume [<count>]': Text("fg \%%(count)d\n"),
+
+    'auto comm': Key("tab:2"),
+    'scan history': Key("c-r"),
 })
 
 
 class Mapping(dragonfly.MappingRule):
     mapping = terminal_mapping
-    extras = []
+    extras = [ruleDigitalInteger]
 
 grammar.add_rule(Mapping())
 grammar.load()

@@ -19,6 +19,7 @@ from aenea import (
 )
 
 class LayoutCommand(MappingRule):
+	exported = False
 	mapping = {
 			'left': Key('cw-left'),
 			'right': Key('cw-right'),
@@ -27,6 +28,7 @@ class LayoutCommand(MappingRule):
 			}
 
 class SwitchCommand(MappingRule):
+	exported = False
 	mapping = {
 			'switch [<n>]': Key('alt:down, tab:%(n)d/15, alt:up'),
 			'swap [<n>]': Key('alt:down, backtick:%(n)d/15, alt:up'),
@@ -39,6 +41,7 @@ class SwitchCommand(MappingRule):
 			}
 
 class DashCommand(MappingRule):
+	exported = False
 	mapping = {
 			'alt [<text>]': Key('alt') + Text('%(text)s'),
 			'launch': Key('win'),
@@ -55,6 +58,7 @@ class DashCommand(MappingRule):
 			}
 
 class WorkspaceCommand(CompoundRule):
+	exported = False
 	spec = 'work <dir>'
 	extras = [Choice('dir', {
 		'up': 'up',

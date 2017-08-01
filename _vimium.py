@@ -19,7 +19,7 @@ import dragonfly
 
 chrome_context = aenea.ProxyCustomAppContext(executable="/opt/google/chrome/chrome")
 grammar = dragonfly.Grammar('chrome', context=chrome_context)
-ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 2)
+ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 3)
 
 window_mapping = {
     # Tab navigation

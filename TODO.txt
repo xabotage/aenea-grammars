@@ -3,9 +3,9 @@ x Implement session controls such as suspend, buffer, and tab controls
 x Implement search functionality
 x Implement window manager
 x Make phytic and fitton work with all character types
-- Learn and integrate tmux grammar
-- Implement nerd tree grammar
 - Implement mark system in vim
 - Learn and integrate better git grammar
+- Implement nerd tree grammar
 - Investigate and/or learn python grammar
 - Implement visual selection mode
+- Learn and integrate tmux grammar

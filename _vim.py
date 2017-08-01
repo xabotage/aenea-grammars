@@ -30,7 +30,7 @@ from dragonfly import (
 
 #vim_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
 vim_context = aenea.wrappers.AeneaContext(
-    ProxyAppContext(match='regex', title='(?i).*VIM.*'),
+    ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True),
     AppContext(title='VIM')
     )
 
@@ -114,7 +114,8 @@ def execute_insertion_buffer(insertion_buffer):
 
 class InsertModeEntry(MappingRule):
     mapping = {
-        'inns': Key('i'),
+        #'inns': Key('i'),
+        'squeeze': Key('i'),
         'syn': Key('a'),
         'phyllo': Key('o'),
         'phyhigh': Key('O'),
