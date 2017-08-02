@@ -5,7 +5,7 @@ x Implement window manager
 x Make phytic and fitton work with all character types
 x Implement mark system in vim
 x Fix multiedit being an idiot with letters
-- Learn and integrate better git grammar
+x Learn and integrate better git grammar
 - Implement nerd tree grammar
 - Investigate and/or learn python grammar
 - Make terminal grammar more structured
