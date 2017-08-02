@@ -115,6 +115,8 @@ class FormatRule(CompoundRule):
 
         return Text(formatted)
 
+format_rule = RuleRef(name='format_rule', rule=FormatRule(name='i'))
+
 
 #---------------------------------------------------------------------------
 # Here we define the keystroke rule.
@@ -183,6 +185,17 @@ class DynamicCountRule(NumericDelegateRule):
         'n': 1,
         }
 
+class DigitInsertion(MappingRule):
+    mapping = dict(('dig ' + key, val) for (key, val) in aenea.misc.DIGITS.iteritems())
+
+    def value(self, node):
+        return Text(MappingRule.value(self, node))
+digit_rule = RuleRef(DigitInsertion(), name='DigitInsertion')
+
+alphabet_mapping = dict((key, Text(value))
+                        for (key, value) in aenea.misc.LETTERS.iteritems())
+alphabet_rule = RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping))
+
 #---------------------------------------------------------------------------
 # Here we create an element which is the sequence of keystrokes.
 
@@ -190,12 +203,8 @@ class DynamicCountRule(NumericDelegateRule):
 #  Note: when processing a recognition, the *value* of this element
 #  will be the value of the referenced rule: an action.
 
-
-mapping = dict((key, val) for (key, val) in command_table.iteritems())
-
-format_rule = RuleRef(name='format_rule', rule=FormatRule(name='i'))
-alternatives = [
-    RuleRef(rule=KeystrokeRule(mapping=mapping, name='c')),
+single_action = Alternative([
+    RuleRef(rule=KeystrokeRule(mapping=command_table, name='c')),
     DictListRef(
         'dynamic multiedit',
         aenea.vocabulary.register_dynamic_vocabulary('multiedit')
@@ -209,23 +218,24 @@ alternatives = [
         ),
     RuleRef(rule=DynamicCountRule(name='aoeuazzzxt'), name='aouxxxazsemi'),
     RuleRef(rule=StaticCountRule(name='aioeuazzzxt'), name='aouxxxazsemii'),
+    alphabet_rule,
+    digit_rule,
     format_rule,
-    ]
+    ])
 
-single_action = Alternative(alternatives)
 
-# Can only be used as the last element
-alphabet_mapping = dict((key, Text(value))
-                        for (key, value) in aenea.misc.LETTERS.iteritems())
+# Can only be used as the last element (as part of finishes), cannot be a
+# part of the above single action alternative list because apparently
+# dragonfly chokes on a repetition within a repetition
+
 numbers_mapping = dict((key, Text(value))
                         for (key, value) in aenea.misc.DIGITS.iteritems())
 alphanumeric_mapping = dict((key, Text(value))
                             for (key, value) in aenea.misc.ALPHANUMERIC.iteritems())
 
-alphabet_rule = Sequence([Literal('letters'), Repetition(RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping)), min=1, max=20)])
 numbers_rule = Sequence([Literal('digits'), Repetition(RuleRef(name='y', rule=MappingRule(name='u', mapping=numbers_mapping)), min=1, max=20)])
 alphanumeric_rule = Sequence([Literal('alphanumeric'), Repetition(RuleRef(name='z', rule=MappingRule(name='v', mapping=alphanumeric_mapping)), min=1, max=20)])
-finishes = [alphabet_rule, numbers_rule, alphanumeric_rule]
+finishes = [numbers_rule, alphanumeric_rule]
 
 # Second we create a repetition of keystroke elements.
 #  This element will match anywhere between 1 and 16 repetitions
