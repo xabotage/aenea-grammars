@@ -6,6 +6,8 @@ from dragonfly import (
     MappingRule,
     RuleRef,
     Repetition,
+    Literal,
+    Sequence,
     Alternative,
     CompoundRule,
 )
@@ -284,6 +286,10 @@ class GitPullRule(CompoundRule):
 pull_rule = RuleRef(name="pull_rule", rule=GitPullRule())
 
 
+# Wrapped in Sequence class so that the nesting works out in the top level rule evaluation
+clone_rule = Sequence([Literal("clone", value="clone ")], name="clone_rule")
+remove_rule = Sequence([Literal("remove", value="rm ")], name="remove_rule")
+
 git_command = Alternative(name='command', children=[
     add_rule,
     commit_rule,
@@ -293,6 +299,8 @@ git_command = Alternative(name='command', children=[
     log_rule,
     branch_rule,
     pull_rule,
+    clone_rule,
+    remove_rule,
 ])
 
 

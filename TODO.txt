@@ -6,8 +6,10 @@ x Make phytic and fitton work with all character types
 x Implement mark system in vim
 x Fix multiedit being an idiot with letters
 x Learn and integrate better git grammar
-- Implement nerd tree grammar
+- Integrate mouse grammar
 - Investigate and/or learn python grammar
+- Create CrtlP grammar
+- Create nerd tree grammar
 - Make terminal grammar more structured
 - Implement visual selection mode
 - Learn and integrate tmux grammar
