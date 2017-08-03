@@ -12,7 +12,8 @@ import aenea.vocabulary
 from aenea import (
     Key,
     NoAction,
-    Text
+    Text,
+    Function
     )
 
 from aenea.proxy_contexts import ProxyAppContext
@@ -25,7 +26,8 @@ from dragonfly import (
     Grammar,
     MappingRule,
     Repetition,
-    RuleRef
+    RuleRef,
+    DictListRef,
     )
 
 #vim_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
@@ -46,11 +48,14 @@ fugitive_index_context = aenea.wrappers.AeneaContext(
 
 grammar = Grammar('vim', context=vim_context)
 
-from dragonfly import DictListRef
-
 VIM_TAGS = ['vim.insertions.code', 'vim.insertions']
 aenea.vocabulary.inhibit_global_dynamic_vocabulary('vim', VIM_TAGS, vim_context)
 
+modeless_engaged = False
+def toggle_modeless():
+    global modeless_engaged
+    print "Toggling modeless state: " + str(not modeless_engaged)
+    modeless_engaged = not modeless_engaged
 
 # TODO: this can NOT be the right way to do this...
 class NumericDelegateRule(CompoundRule):
@@ -92,14 +97,13 @@ def execute_insertion_buffer(insertion_buffer):
     if not insertion_buffer:
         return
 
-    mode_entry = insertion_buffer[0][0]
-    skip_escape = False
-    if mode_entry is not None:
+    global modeless_engaged
+    mode_entry = insertion_buffer[0][0] or Key('a')
+    skip_escape = modeless_engaged
+    if not modeless_engaged:
         mode_entry.execute()
         if mode_entry._spec in non_canceling_entries:
             skip_escape = True # Skip insertion mode exit
-    else:
-        Key('a').execute()
 
     for insertion in insertion_buffer:
         insertion[1].execute()
@@ -643,6 +647,7 @@ ruleCommand = RuleRef(Command(), name='Command')
 class BufferCommand(MappingRule):
     mapping = {
             'save': Key('colon, w, enter'),
+            'save as': Key('colon, w, space'),
             'really save': Key('colon, w, exclamation, enter'),
             'save all': Key('colon, w, a, enter'),
             'quit': Key('colon, q, enter'),
@@ -682,6 +687,14 @@ class MarkCommand(MappingRule):
             }
     extras = [ruleLetterMapping]
 
+# Use this to disable/enable automatic insertion mode entry.
+# Useful for using any vim functionality not covered by this grammar,
+# i.e. CtrlP, Fugitive, etc without always having to specify the 'nicked' entry
+class ModelessCommand(MappingRule):
+        mapping = {
+            'no mode': Function(toggle_modeless),
+            }
+
 
 # ****************************************************************************
 
@@ -696,6 +709,7 @@ class VimCommand(CompoundRule):
                   RuleRef(SplitCommand()),
                   RuleRef(SearchCommand()),
                   RuleRef(MarkCommand()),
+                  RuleRef(ModelessCommand()),
                 ], name='session')
               ]
 
