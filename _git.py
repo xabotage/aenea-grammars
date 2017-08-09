@@ -14,6 +14,7 @@ from dragonfly import (
 
 from aenea import Text
 from aenea.proxy_contexts import ProxyAppContext
+import lib.contexts as ctx
 
 
 def recurse_values(node, types):
@@ -26,6 +27,7 @@ def recurse_values(node, types):
 
 
 class GitAddOptionRule(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands('git_add_options', {
         'dry run': '--dry-run ',
         'verbose': '--verbose ',
@@ -48,6 +50,7 @@ add_options = Repetition(add_option, min=1, max=10, name='add_options')
 
 
 class GitAddRule(CompoundRule):
+    exported = False
     spec = "add [<add_options>]"
     extras = [add_options]
 
@@ -57,6 +60,7 @@ add_rule = RuleRef(name='add_rule', rule=GitAddRule())
 
 
 class GitCommitOptionRule(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands('git_commit_options', {
         'all': '--all ',
         'patch': '--patch ',
@@ -102,6 +106,7 @@ commit_options = Repetition(
 
 
 class GitCommitRule(CompoundRule):
+    exported = False
     spec = 'commit [<commit_options>]'
     extras = [commit_options]
 
@@ -111,6 +116,7 @@ commit_rule = RuleRef(name='commit_rule', rule=GitCommitRule())
 
 
 class GitCheckoutOptionRule(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands(
         'git_checkout_options', {
             'quiet': '--quiet ',
@@ -135,6 +141,7 @@ checkout_options = Repetition(
 
 
 class GitCheckoutRule(CompoundRule):
+    exported = False
     spec = 'checkout [<checkout_options>]'
     extras = [checkout_options]
 
@@ -144,6 +151,7 @@ checkout_rule = RuleRef(name='checkout_rule', rule=GitCheckoutRule())
 
 
 class GitPushOptionRule(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands('git_push_options', {
         "all": "--all ",
         "prune": "--prune ",
@@ -159,6 +167,7 @@ push_options = Repetition(push_option, min=1, max=10, name="push_options")
 
 
 class GitPushRule(CompoundRule):
+    exported = False
     spec = "push [<push_options>]"
     extras = [push_options]
 
@@ -168,6 +177,7 @@ push_rule = RuleRef(name="push_rule", rule=GitPushRule())
 
 
 class GitStatusRuleOption(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands('git_status_options', {
         "short": "--short ",
         "branch": "--branch ",
@@ -183,6 +193,7 @@ status_options = Repetition(
 
 
 class GitStatusRule(CompoundRule):
+    exported = False
     spec = "status [<status_options>]"
     extras = [status_options]
 
@@ -192,6 +203,7 @@ status_rule = RuleRef(name="status_rule", rule=GitStatusRule())
 
 
 class GitPrettyFormatRule(MappingRule):
+    exported = False
     mapping = {
         "one line": "oneline ",
         "short": "short ",
@@ -207,6 +219,7 @@ pretty_format_rule = RuleRef(
 
 
 class GitPrettyRule(CompoundRule):
+    exported = False
     spec = "pretty <pretty_format_rule>"
     extras = [pretty_format_rule]
 
@@ -220,6 +233,7 @@ pretty_rules = Alternative(name="pretty_rules", children=[
 
 class GitLogOptionRule(CompoundRule):
     # TODO: expand this class to use more than a single "pretty" rule
+    exported = False
     spec = "<pretty_rules>"
     extras = [pretty_rules]
 
@@ -229,6 +243,7 @@ log_option = RuleRef(name="log_option", rule=GitLogOptionRule())
 
 
 class GitLogRule(CompoundRule):
+    exported = False
     spec = "log [<log_option>]"
     extras = [log_option]
 
@@ -238,13 +253,14 @@ log_rule = RuleRef(name="log_option", rule=GitLogRule())
 
 
 class GitBranchOptionRule(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands(
         'git_branch_options', {
             'delete': '--delete ',
             'force': '--force ',
             'move': '--move ',
             'remotes': '--remotes ',
-            'quiet': '--quite ',
+            'quiet': '--quiet ',
         }
     )
 branch_option = RuleRef(
@@ -256,6 +272,7 @@ branch_options = Repetition(
 
 
 class GitBranchRule(CompoundRule):
+    exported = False
     spec = "branch [<branch_options>]"
     extras = [branch_options]
 
@@ -265,6 +282,7 @@ branch_rule = RuleRef(name="branch_rule", rule=GitBranchRule())
 
 
 class GitPullOption(MappingRule):
+    exported = False
     mapping = aenea.configuration.make_grammar_commands(
         "git_pull_options", {
             "quiet": "--quiet ",
@@ -278,6 +296,7 @@ pull_options = Repetition(pull_option, min=1, max=10, name="pull_options")
 
 
 class GitPullRule(CompoundRule):
+    exported = False
     spec = "pull [<pull_options>]"
     extras = [pull_options]
 
@@ -289,8 +308,9 @@ pull_rule = RuleRef(name="pull_rule", rule=GitPullRule())
 # Wrapped in Sequence class so that the nesting works out in the top level rule evaluation
 clone_rule = Sequence([Literal("clone", value="clone ")], name="clone_rule")
 remove_rule = Sequence([Literal("remove", value="rm ")], name="remove_rule")
+diff_rule = Sequence([Literal("diff", value="diff ")], name="diff_rule")
 
-git_command = Alternative(name='command', children=[
+git_command = [
     add_rule,
     commit_rule,
     checkout_rule,
@@ -301,12 +321,28 @@ git_command = Alternative(name='command', children=[
     pull_rule,
     clone_rule,
     remove_rule,
-])
+    diff_rule,
+]
 
+class GitHelpRule(CompoundRule):
+    exported = False
+    spec = "help [<command>]"
+    extras = [Alternative(name='command', children=git_command)]
+
+    def value(self, node):
+        print 'Value was called'
+        val = ''
+        try:
+            val = node.children[0].children[0].children[1].children[0].children[0].value()
+        except:
+            pass
+        return "help " + val
+
+git_command.append(RuleRef(name="help_rule", rule=GitHelpRule()))
 
 class GitRule(CompoundRule):
     spec = 'git <command>'
-    extras = [git_command]
+    extras = [Alternative(name='command', children=git_command)]
 
     def process_recognition(self, node):
         self.value(node).execute()
@@ -317,10 +353,7 @@ class GitRule(CompoundRule):
         return value
 
 
-terminal_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
-vim_context = ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True)
-
-git_grammar = Grammar('git', context=(terminal_context & ~vim_context))
+git_grammar = Grammar('git', context=(ctx.terminal_context & ~ctx.vim_context))
 git_grammar.add_rule(GitRule())
 git_grammar.load()
 
