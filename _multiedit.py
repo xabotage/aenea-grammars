@@ -247,11 +247,6 @@ finishes = [numbers_rule, alphanumeric_rule]
 #  actions.
 sequence = Repetition(single_action, min=1, max=16, name='sequence')
 
-extras = [
-    sequence,  # Sequence of actions defined above.
-    IntegerRef('n', 1, 100),  # Times to repeat the sequence.
-    Alternative([Literal('hi')], name='finish'),
-    ]
 
 #---------------------------------------------------------------------------
 # Here we define the top-level rule which the user can say.
@@ -275,6 +270,12 @@ class RepeatRule(CompoundRule):
     # Here we define this rule's spoken-form and special elements.
     spec = '[ <sequence> ] [ ( literal <format_rule> )  | <finish> ] [repeat <n> times]'
 
+    extras = [
+        sequence,  # Sequence of actions defined above.
+        format_rule,
+        IntegerRef('n', 1, 100),  # Times to repeat the sequence.
+        Alternative(finishes, name='finish'),
+    ]
     
     defaults = {
         'n': 1, # Default repeat count.
@@ -331,7 +332,7 @@ if proxy_disable_setting is not None:
 context = AeneaContext(proxy_disable_context, local_disable_context)
 
 grammar = Grammar('multiedit', context=~context)
-grammar.add_rule(RepeatRule(extras=extras + [format_rule, Alternative(finishes, name='finish')], name='a'))
+grammar.add_rule(RepeatRule(name='a'))
 grammar.add_rule(LiteralRule())
 
 grammar.load()
