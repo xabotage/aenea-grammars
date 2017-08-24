@@ -674,10 +674,22 @@ class MarkCommand(MappingRule):
 # Useful for using any vim functionality not covered by this grammar,
 # i.e. CtrlP, Fugitive, etc without always having to specify the 'nicked' entry
 class ModelessCommand(MappingRule):
-        mapping = {
+    mapping = {
             'no mode': Function(toggle_modeless),
             }
 
+class NERDTreeCommand(MappingRule):
+    mapping = {
+            'nerdy': Text(':NERDTreeToggle\n'),
+            }
+
+class ScrollCommand(MappingRule):
+    mapping = {
+            'gope [<count>]': Key('c-u:%(count)d'),
+            'drop [<count>]': Key('c-d:%(count)d'),
+            }
+    extras = [ruleDigitalInteger[3]]
+    defaults = {'count': 1}
 
 # ****************************************************************************
 
@@ -693,6 +705,8 @@ class VimCommand(CompoundRule):
                   RuleRef(SearchCommand()),
                   RuleRef(MarkCommand()),
                   RuleRef(ModelessCommand()),
+                  RuleRef(NERDTreeCommand()),
+                  RuleRef(ScrollCommand()),
                 ], name='session')
               ]
 
