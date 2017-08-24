@@ -8,6 +8,7 @@ LEADER = 'comma'
 import aenea.config
 import aenea.misc
 import aenea.vocabulary
+import lib.contexts as ctx
 
 from aenea import (
     Key,
@@ -15,8 +16,6 @@ from aenea import (
     Text,
     Function
     )
-
-from aenea.proxy_contexts import ProxyAppContext
 
 from dragonfly import (
     Alternative,
@@ -30,23 +29,7 @@ from dragonfly import (
     DictListRef,
     )
 
-#vim_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
-vim_context = aenea.wrappers.AeneaContext(
-    ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True),
-    AppContext(title='VIM')
-    )
-
-command_t_context = aenea.wrappers.AeneaContext(
-    ProxyAppContext(match='regex', title='^GoToFile.*$'),
-    AppContext(title='GoToFile')
-    ) & vim_context
-
-fugitive_index_context = aenea.wrappers.AeneaContext(
-    ProxyAppContext(match='regex', title='^index.*\.git.*$'),
-    AppContext(title='index') & AppContext('.git')
-    ) & vim_context
-
-grammar = Grammar('vim', context=vim_context)
+grammar = Grammar('vim', context=ctx.vim_context)
 
 VIM_TAGS = ['vim.insertions.code', 'vim.insertions']
 aenea.vocabulary.inhibit_global_dynamic_vocabulary('vim', VIM_TAGS, vim_context)

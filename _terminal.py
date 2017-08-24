@@ -9,19 +9,28 @@
 
 import aenea
 import aenea.configuration
-from aenea.proxy_contexts import ProxyAppContext
+import aenea.misc
 from aenea.lax import Key, Text
 import dragonfly
+from dragonfly import (
+        MappingRule,
+        CompoundRule,
+        Dictation,
+        Repetition,
+        Literal,
+        Alternative,
+        RuleRef,
+        )
+
+import lib.contexts as ctx
+
 try:
     import aenea.communications
 except ImportError:
     print 'Unable to import Aenea client-side modules.'
     raise
 
-terminal_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
-#terminal_context = aenea.ProxyPlatformContext('linux')
-vim_context = ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True)
-grammar = dragonfly.Grammar('terminal', context=(terminal_context & ~vim_context))
+grammar = dragonfly.Grammar('terminal', context=(ctx.terminal_context & ~ctx.vim_context))
 ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 3)
 
 terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {

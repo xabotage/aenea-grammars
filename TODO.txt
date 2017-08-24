@@ -7,9 +7,9 @@ x Implement mark system in vim
 x Fix multiedit being an idiot with letters
 x Learn and integrate better git grammar
 x Create nerd tree grammar
-- Integrate mouse grammar
 - Make terminal grammar more structured
-- Investigate and/or learn python grammar
+- Integrate mouse grammar
+- Make vocabularies actually be dynamic
 - Create CrtlP grammar
 - Implement visual selection mode
 - Learn and integrate tmux grammar

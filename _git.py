@@ -13,7 +13,6 @@ from dragonfly import (
 )
 
 from aenea import Text
-from aenea.proxy_contexts import ProxyAppContext
 import lib.contexts as ctx
 
 
