@@ -7,6 +7,7 @@
 #
 # Licensed under LGPL
 
+from _multiedit import get_multiedit_single_action
 import aenea
 import aenea.configuration
 import aenea.misc
@@ -40,27 +41,13 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     'deer list': Text("ls") + Key("enter"),
     'deer list all': Text("ls -lha") + Key("enter"),
     'deer list details': Text("ls -lh") + Key("enter"),
-    'deer into': Text("cd "),
 
     '(terminal|term) clear': Text("clear") + Key("enter"),
-    '(terminal|term) left': Key("c-pgup"),
-    '(terminal|term) right': Key("c-pgdown"),
+    '(terminal|term) (left|track)': Key("c-pgup"),
+    '(terminal|term) (right|trite)': Key("c-pgdown"),
     '(terminal|term) new [tab]': Key("cs-t"),
     '(terminal|term) (close|exit)': Key("c-c") + Text("exit") + Key("enter"),
 
-    # Common words
-    '(pseudo|sudo|pseudo-)': Text("sudo "),
-    '(apt|app) get': Text("sudo apt-get "),
-    '(apt|app) get install': Text("sudo apt-get install "),
-
-    'grep': Text("grep "),
-    'ack grep': Text("ack-grep "),
-    'cat': Text("cat "),
-    'pipe [into]': Text(" | "),
-    'edit': Text("vim "),
-    'tea mucks': Text("tmux "),
-
-    'proc list': Text("ps -e\n"),
     'jobs': Text("jobs\n"),
     'resume': Text("fg\n"),
     'resume [<count>]': Text("fg \%%(count)d\n"),
@@ -69,14 +56,100 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     'scan history': Key("c-r"),
 })
 
+class LetterMapping(MappingRule):
+    exported = False
+    mapping = aenea.misc.LETTERS
+rule_letter = RuleRef(LetterMapping(), name='letter')
 
-class Mapping(dragonfly.MappingRule):
+
+class SudoRule(MappingRule):
+    exported = False
+    mapping = {'(pseudo|sudo|pseudo-)': Text('sudo ')}
+sudo_rule = RuleRef(SudoRule(), name='sudo')
+
+
+class FlowRule(MappingRule):
+    exported = False
+    mapping = {
+            'pipe [into]': Text(' | '),
+            'and (then|also)': Text(' && '),
+            '[in the] background': Text(' & '),
+            }
+flow_rule = RuleRef(FlowRule(), name='flow_rule')
+
+
+class ProgramMapping(MappingRule):
+    exported = False
+    mapping = {
+            'deer into': Text("cd "),
+            'man': Text("man "),
+            'copy': Text("cp "),
+            'remove': Text("rm "),
+            'grep': Text("grep "),
+            'ack grep': Text("ack-grep "),
+            'cat': Text("cat "),
+            'edit': Text("vim "),
+            'tea mucks': Text("tmux "),
+            'sort': Text("sort "),
+            'proc list': Text("ps "),
+            'tar': Text("tar "),
+            '(apt|app) get': Text("apt-get "),
+            '(apt|app) get install': Text("apt-get install "),
+            }
+program_rule = RuleRef(ProgramMapping(), name='program_rule')
+
+
+class FlagRule(CompoundRule):
+    exported = False
+    spec = 'flag [<letters>]'
+    extras = [Repetition(rule_letter, min=0, max=5, name='letters'), ]
+
+    def value(self, node):
+        letters = node.children[0].children[0].children[1].children[0].value()
+        return Text('-' + ''.join(letters) + ' ')
+flag_rule = RuleRef(FlagRule(), name='flags')
+
+
+# Toplevel rule for one-off terminal commands
+class Mapping(MappingRule):
     mapping = terminal_mapping
     extras = [ruleDigitalInteger]
 
-grammar.add_rule(Mapping())
-grammar.load()
 
+# Toplevel rule that harnesses multiedit to allow a comprehensive terminal command
+# to be entered without pausing.
+class TerminalCommand(CompoundRule):
+    spec = ('[<flow1>] [<sudo>] <program> [<flags>] [<multiedit_dictation>] [<flow2>]')
+    extras = [
+            Alternative([
+                flow_rule,
+                ], name='flow1'),
+            sudo_rule,
+            Alternative([
+                program_rule,
+                ], name='program'),
+            flag_rule,
+            Repetition(get_multiedit_single_action(), min=1, max=16, name='multiedit_dictation'),
+            Alternative([
+                flow_rule,
+                ], name='flow2'),
+            ]
+
+    def _process_recognition(self, node, extras):
+        command = Text('')
+        order = ('flow1', 'sudo', 'program', 'flags', 'multiedit_dictation', 'flow2')
+        for extra in order:
+            if extra in extras:
+                if extra is 'multiedit_dictation':
+                    for action in extras[extra]: command += action
+                else:
+                    command += extras[extra]
+        command.execute()
+
+
+grammar.add_rule(Mapping())
+grammar.add_rule(TerminalCommand())
+grammar.load()
 
 def unload():
     global grammar

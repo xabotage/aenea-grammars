@@ -32,7 +32,7 @@ from dragonfly import (
 grammar = Grammar('vim', context=ctx.vim_context)
 
 VIM_TAGS = ['vim.insertions.code', 'vim.insertions']
-aenea.vocabulary.inhibit_global_dynamic_vocabulary('vim', VIM_TAGS, vim_context)
+aenea.vocabulary.inhibit_global_dynamic_vocabulary('vim', VIM_TAGS, ctx.vim_context)
 
 modeless_engaged = False
 def toggle_modeless():

@@ -118,37 +118,6 @@ class FormatRule(CompoundRule):
 format_rule = RuleRef(name='format_rule', rule=FormatRule(name='i'))
 
 
-#---------------------------------------------------------------------------
-# Here we define the keystroke rule.
-
-# This rule maps spoken-forms to actions.  Some of these
-#  include special elements like the number with name 'n'
-#  or the dictation with name 'text'.  This rule is not
-#  exported, but is referenced by other elements later on.
-#  It is derived from MappingRule, so that its 'value' when
-#  processing a recognition will be the right side of the
-#  mapping: an action.
-# Note that this rule does not execute these actions, it
-#  simply returns them when it's value() method is called.
-#  For example 'up 4' will give the value Key('up:4').
-# More information about Key() actions can be found here:
-#  http://dragonfly.googlecode.com/svn/trunk/dragonfly/documentation/actionkey.html
-
-
-class KeystrokeRule(MappingRule):
-    exported = False
-
-    extras = [
-        IntegerRef('n', 1, 100),
-        Dictation('text'),
-        Dictation('text2'),
-        ]
-
-    defaults = {
-        'n': 1,
-        }
-
-
 # TODO: this can NOT be the right way to do this...
 class NumericDelegateRule(CompoundRule):
     def value(self, node):
@@ -160,69 +129,78 @@ class NumericDelegateRule(CompoundRule):
             return value
 
 
-class StaticCountRule(NumericDelegateRule):
-    spec = '<static> [<n>]'
+def get_static_count_rule():
+    return NumericDelegateRule(
+        name='SomeCrapHereToAppeaseDragonfly_2',
+        spec='<static> [<n>]',
+        extras=[
+            IntegerRef('n', 1, 100),
+            DictListRef(
+                'static',
+                DictList(
+                    'static multiedit.count',
+                    aenea.vocabulary.get_static_vocabulary('multiedit.count')
+                    )),
+        ],
+        defaults={'n': 1}
+    )
 
-    extras = [
-        IntegerRef('n', 1, 100),
-        DictListRef(
-            'static',
-            DictList(
-                'static multiedit.count',
-                aenea.vocabulary.get_static_vocabulary('multiedit.count')
-                )),
-        ]
-
-class DynamicCountRule(NumericDelegateRule):
-    spec = '<dynamic> [<n>]'
-
-    extras = [
-        IntegerRef('n', 1, 100),
-        DictListRef('dynamic', aenea.vocabulary.register_dynamic_vocabulary('multiedit.count')),
-        ]
-
-    defaults = {
-        'n': 1,
-        }
+def get_dynamic_count_rule():
+    return NumericDelegateRule(
+        name='SomeCrapHereToAppeaseDragonfly_1',
+        spec='<dynamic> [<n>]',
+        extras=[
+            IntegerRef('n', 1, 100),
+            DictListRef('dynamic', aenea.vocabulary.register_dynamic_vocabulary('multiedit.count')),
+        ],
+        defaults={'n': 1}
+    )
 
 class DigitInsertion(MappingRule):
     mapping = dict(('dig ' + key, val) for (key, val) in aenea.misc.DIGITS.iteritems())
 
     def value(self, node):
         return Text(MappingRule.value(self, node))
-digit_rule = RuleRef(DigitInsertion(), name='DigitInsertion')
 
 alphabet_mapping = dict((key, Text(value))
                         for (key, value) in aenea.misc.LETTERS.iteritems())
-alphabet_rule = RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping))
 
 #---------------------------------------------------------------------------
-# Here we create an element which is the sequence of keystrokes.
-
-# First we create an element that references the keystroke rule.
-#  Note: when processing a recognition, the *value* of this element
-#  will be the value of the referenced rule: an action.
-
-single_action = Alternative([
-    RuleRef(rule=KeystrokeRule(mapping=command_table, name='c')),
-    DictListRef(
-        'dynamic multiedit',
-        aenea.vocabulary.register_dynamic_vocabulary('multiedit')
-        ),
-    DictListRef(
-        'static multiedit',
-        DictList(
-            'static multiedit',
-            aenea.vocabulary.get_static_vocabulary('multiedit')
-            ),
-        ),
-    RuleRef(rule=DynamicCountRule(name='aoeuazzzxt'), name='aouxxxazsemi'),
-    RuleRef(rule=StaticCountRule(name='aioeuazzzxt'), name='aouxxxazsemii'),
-    alphabet_rule,
-    digit_rule,
-    format_rule,
-    ])
-
+# Generates an element that represents a single keystroke or action.
+# Import this function into whatever grammar requires multiedit dictation
+# (See the _terminal.py grammar for an example)
+def get_multiedit_single_action():
+    return Alternative([
+        RuleRef(rule=MappingRule(
+            mapping=command_table,
+            name='c',
+            exported=False,
+            extras=[
+                IntegerRef('n', 1, 100),
+                Dictation('text'),
+                Dictation('text2'),
+            ],
+            defaults={
+                'n': 1,
+            },
+        )),
+        DictListRef(
+           'dynamic multiedit',
+           aenea.vocabulary.register_dynamic_vocabulary('multiedit')
+           ),
+        DictListRef(
+           'static multiedit',
+           DictList(
+               'static multiedit',
+               aenea.vocabulary.get_static_vocabulary('multiedit')
+               ),
+           ),
+        RuleRef(rule=get_dynamic_count_rule(), name='SomeCrapHereToAppeaseDragonfly_1a'),
+        RuleRef(rule=get_static_count_rule(), name='SomeCrapHereToAppeaseDragonfly_2a'),
+        RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping)),
+        RuleRef(DigitInsertion(), name='DigitInsertion'),
+        RuleRef(name='format_rule', rule=FormatRule(name='format_rule')),
+        ])
 
 # Can only be used as the last element (as part of finishes), cannot be a
 # part of the above single action alternative list because apparently
@@ -245,7 +223,7 @@ finishes = [numbers_rule, alphanumeric_rule]
 # Note: when processing a recognition, the *value* of this element
 #  will be a sequence of the contained elements: a sequence of
 #  actions.
-sequence = Repetition(single_action, min=1, max=16, name='sequence')
+sequence = Repetition(get_multiedit_single_action(), min=1, max=16, name='sequence')
 
 
 #---------------------------------------------------------------------------
@@ -276,7 +254,7 @@ class RepeatRule(CompoundRule):
         IntegerRef('n', 1, 100),  # Times to repeat the sequence.
         Alternative(finishes, name='finish'),
     ]
-    
+
     defaults = {
         'n': 1, # Default repeat count.
         }
