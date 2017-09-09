@@ -47,6 +47,7 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     '(terminal|term) (right|trite)': Key("c-pgdown"),
     '(terminal|term) new [tab]': Key("cs-t"),
     '(terminal|term) (close|exit)': Key("c-c") + Text("exit") + Key("enter"),
+    '(terminal|term) abort': Key("c-c"),
 
     'jobs': Text("jobs\n"),
     'resume': Text("fg\n"),

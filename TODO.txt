@@ -7,8 +7,8 @@ x Implement mark system in vim
 x Fix multiedit being an idiot with letters
 x Learn and integrate better git grammar
 x Create nerd tree grammar
-- Make terminal grammar more structured
-- Integrate mouse grammar
+x Make terminal grammar more structured
+x Integrate mouse grammar
 - Make vocabularies actually be dynamic
 - Create CrtlP grammar
 - Implement visual selection mode
