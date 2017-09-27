@@ -86,6 +86,10 @@ class ProgramMapping(MappingRule):
             'man': Text("man "),
             'copy': Text("cp "),
             'remove': Text("rm "),
+            'shell': Text("ssh "),
+            'mosh': Text("mosh "),
+            'change owner': Text("chown "),
+            'change mod': Text("chmod "),
             'grep': Text("grep "),
             'ack grep': Text("ack-grep "),
             'cat': Text("cat "),
@@ -96,6 +100,9 @@ class ProgramMapping(MappingRule):
             'tar': Text("tar "),
             '(apt|app) get': Text("apt-get "),
             '(apt|app) get install': Text("apt-get install "),
+            '(apt|app) cash': Text("apt-cache "),
+            '(apt|app) install': Text("apt install "),
+            '(apt|app) show': Text("apt show "),
             }
 program_rule = RuleRef(ProgramMapping(), name='program_rule')
 
