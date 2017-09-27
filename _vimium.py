@@ -51,8 +51,6 @@ window_mapping = {
     'less <count>': Key("escape") + Key("k:%(count)d"),
     'top': Key("escape") + Key("g, g"),
     'bottom': Key("escape") + Key("s-g"),
-    'back': Key("escape") + Key("s-h"),
-    'forward': Key("escape") + Key("s-l"),
 
     #  Searching
     'find <text>': Key("escape, slash") + Text("%(text)s") + Key("enter"),

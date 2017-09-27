@@ -18,34 +18,48 @@ import dragonfly
 
 firefox_context = aenea.ProxyCustomAppContext(executable="/usr/lib/firefox/firefox")
 grammar = dragonfly.Grammar('firefox', context=firefox_context)
+ruleDigitalInteger = aenea.misc.DigitalInteger('count', 1, 3)
 
 window_mapping = {
     # Tab navigation
-    'page (previous|left)': Key("cs-tab"),
-    'page (next|right)': Key("c-tab"),
-    'page (home|first)': Key("g, s-h"),
-    'page (end|last)': Key("g, s-l"),
+    '(track|trek)': Key("cs-tab"),
+    '(track|trek) <n>': Key("cs-tab:%(n)d"),
+    'trite': Key("c-tab"),
+    'trite <n>': Key("c-tab:%(n)d"),
+    'page left': Key("cs-tab"),
+    'page left <n>': Key("cs-tab:%(n)d"),
+    'page right': Key("c-tab"),
+    'page right <n>': Key("c-tab:%(n)d"),
+    'page <n>': Key("a-%(n)d"),
     'page new': Key("c-t"),
     'page reopen': Key("cs-t"),
     'page close': Key("c-w"),
-    '[page] back': Key("s-h"),
-    '[page] forward': Key("s-l"),
-    'refresh': Key("r"),
-    'link': Key("f"),
-    'link new': Key("s-f"),
+    'screw this': Key("c-w"),
+    'page back': Key("escape") + Key("s-h"),
+    'page forward': Key("escape") + Key("s-l"),
+    'refresh': Key("escape") + Key("r"),
+    'link': Key("escape") + Key("f"),
+    'link new': Key("escape") + Key("s-f"),
 
     #  Moving around
-    'more': Key("d"),
-    'less': Key("u"),
-    'screen down': Key("c, f"),
-    'screen up': Key("c, u"),
-    'top': Key("g, g"),
-    'bottom': Key("s-g"),
+    'more': Key("escape") + Key("d"),
+    'much more': Key("escape") + Key("d:2"),
+    'more <count>': Key("escape") + Key("d:%(count)d"),
+    'less': Key("escape") + Key("u"),
+    'much less': Key("escape") + Key("u:2"),
+    'less <count>': Key("escape") + Key("u:%(count)d"),
+    'top': Key("escape") + Key("g, g"),
+    'bottom': Key("escape") + Key("s-g"),
 
     #  Searching
     'find <text>': Key("escape, slash") + Text("%(text)s") + Key("enter"),
+    'find': Key("escape, slash"),
     'next': Key("n"),
     'prev|previous': Key("N"),
+
+    #  Miscellaneous
+    'address': Key("c-l"),
+    'address <text>': Key("c-l") + Text("%(text)s"),
 }
 
 gmail_mapping = {
@@ -64,6 +78,7 @@ class Mapping(dragonfly.MappingRule):
     extras = [
         IntegerRef('n', 1, 99),
         Dictation('text'),
+        ruleDigitalInteger,
     ]
 
 class MappingMail(dragonfly.MappingRule):
