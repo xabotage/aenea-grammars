@@ -10,4 +10,10 @@ vim_context = aenea.wrappers.AeneaContext(
 		ProxyAppContext(match='regex', title='.*VIM.*', case_sensitive=True),
 		AppContext(title='VIM')
 		)
+
+atom_context = aenea.wrappers.AeneaContext(
+		ProxyAppContext(match='regex', title='.*Atom$', case_sensitive=True),
+		AppContext(title='Atom')
+		)
+
 terminal_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")

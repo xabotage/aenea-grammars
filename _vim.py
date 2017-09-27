@@ -29,7 +29,7 @@ from dragonfly import (
     DictListRef,
     )
 
-grammar = Grammar('vim', context=ctx.vim_context)
+grammar = Grammar('vim', context=ctx.vim_context|ctx.atom_context)
 
 VIM_TAGS = ['vim.insertions.code', 'vim.insertions']
 aenea.vocabulary.inhibit_global_dynamic_vocabulary('vim', VIM_TAGS, ctx.vim_context)
@@ -474,7 +474,7 @@ ruleCountedMotion = RuleRef(CountedMotion(), name='CountedMotion')
 class Motion(CompoundRule):
     spec = '<motion>'
     extras = [Alternative(
-        [ruleCountedMotion, ruleUncountedMotion],
+        [ruleCountedMotion], #, ruleUncountedMotion], # Useless and annoying
         name='motion'
         )]
 
