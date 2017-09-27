@@ -71,6 +71,24 @@ class WorkspaceCommand(CompoundRule):
 		direction = node.children[0].children[0].children[1].value()
 		return Key('ca-%s' % direction)
 
+class WindowWorkspaceCommand(CompoundRule):
+	exported = False
+	spec = 'bring <dir>'
+	extras = [Choice('dir', {
+		'up': 'up',
+		'down': 'down',
+		'left': 'left',
+		'right': 'right',
+		})]
+
+	def value(self, node):
+		direction = node.children[0].children[0].children[1].value()
+		return Key('csa-%s' % direction)
+
+class PutCommand(MappingRule):
+	exported = False
+        mapping = { 'put window': Key('caw-right'), }
+
 class UnityCommand(CompoundRule):
 	spec = ('yoonie <desktop>')
 	extras = [Alternative([
@@ -78,6 +96,8 @@ class UnityCommand(CompoundRule):
 		RuleRef(SwitchCommand()),
 		RuleRef(DashCommand()),
 		RuleRef(WorkspaceCommand()),
+		RuleRef(WindowWorkspaceCommand()),
+		RuleRef(PutCommand()),
 		], name='desktop')
 	]
 
