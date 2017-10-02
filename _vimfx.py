@@ -37,7 +37,7 @@ window_mapping = {
     'screw this': Key("c-w"),
     'page back': Key("escape") + Key("s-h"),
     'page forward': Key("escape") + Key("s-l"),
-    'refresh': Key("escape") + Key("r"),
+    'refresh': Key("c-r"),
     'link': Key("escape") + Key("f"),
     'link new': Key("escape") + Key("s-f"),
 

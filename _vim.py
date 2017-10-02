@@ -637,6 +637,8 @@ class BufferCommand(MappingRule):
             'really quit': Key('colon, q, exclamation, enter'),
             'quit all': Key('colon, q, a, enter'),
             'suspend': Key('colon, s, u, s, enter'),
+            'tab new': Key('colon, t, a, b, n, e, w, enter'),
+            'buff edit': Key('colon, e, space'),
             'buff next': Key('colon, b, n, enter'),
             'buff back': Key('colon, b, p, enter'),
             'buff list': Key('colon, l, s, enter'),

@@ -47,6 +47,8 @@ class DashCommand(MappingRule):
 			'launch': Key('win'),
 			# Press and release shift as workaround for xdotool bug.
 			'app <n>': Key('win:down, shift:down, shift:up, %(n)d, win:up'),
+                        'terminal': Key('ca-t'),
+                        'lock': Key('ca-l'),
 			}
 	extras = [
         IntegerRef('n', 0, 9),
