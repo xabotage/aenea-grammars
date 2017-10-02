@@ -6,7 +6,7 @@ from aenea.proxy_contexts import ProxyAppContext
 
 from dragonfly import (
         Grammar,
-		MappingRule,
+        MappingRule,
         )
 
 import lib.contexts as ctx
@@ -30,15 +30,15 @@ nerd_mapping = aenea.configuration.make_grammar_commands('NERD_tree', {
 
     # Bookmark table mappings
     'delete bookmark': Key('D'),
-    
+
     # Tree navigation mappings
     'root': Key('P'),
     'parent': Key('p'),
     'top child': Key('K'),
     'bot child': Key('J'),
-	'child': Key('c-j'),
-	'chup': Key('c-k'),
-    
+    'child': Key('c-j'),
+    'chup': Key('c-k'),
+
     # Filesystem mappings
     'make root': Key('C'),
     'uprooter': Key('u'),
@@ -49,21 +49,21 @@ nerd_mapping = aenea.configuration.make_grammar_commands('NERD_tree', {
     'deer into': Key('c, d'),
     'restore root': Key('C, D'),
 
-	# Tree filtering mappings
-	'toggle hidden': Key('I'),
-	'toggle filters': Key('f'),
-	'toggle files': Key('F'),
-	'toggle bookmarks': Key('B'),
+    # Tree filtering mappings
+    'toggle hidden': Key('I'),
+    'toggle filters': Key('f'),
+    'toggle files': Key('F'),
+    'toggle bookmarks': Key('B'),
 
     # Other mappings
     'close': Key('q'),
     'zoom': Key('A'),
     'help': Key('question'),
-	})
+    })
 
 nerd_tree_context = ProxyAppContext(
         match='regex',
-        title='^NERD_tree_[0-9]*.*',
+        title='.*NERD_tree_[0-9]*.*',
         case_sensitive=True
         ) & ctx.vim_context
 
@@ -72,7 +72,7 @@ nerd_grammar.add_rule(MappingRule('NERD_tree_mapping', mapping=nerd_mapping))
 nerd_grammar.load()
 
 def unload():
-	global nerd_grammar
-	if nerd_grammar:
-		nerd_grammar.unload()
-	nerd_grammar = None
+    global nerd_grammar
+    if nerd_grammar:
+        nerd_grammar.unload()
+    nerd_grammar = None
