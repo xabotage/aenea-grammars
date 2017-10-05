@@ -698,6 +698,21 @@ class ScrollCommand(MappingRule):
     extras = [ruleDigitalInteger[3]]
     defaults = {'count': 1}
 
+class JumpCommand(MappingRule):
+    mapping = {
+            'jump [<count>]': Key('c-i:%(count)d'),
+            'jack [<count>]': Key('c-o:%(count)d'),
+            'jump list': Key('colon, j, u, m, p, s'),
+            }
+    extras = [ruleDigitalInteger[3]]
+    defaults = {'count': 1}
+
+class VimrcCommand(MappingRule):
+    mapping = {
+            'edit vim RC': Text(':tabnew ~/.vimrc\n'),
+            'source vim RC': Text(':so ~/.vimrc\n'),
+            }
+
 # ****************************************************************************
 
 
@@ -714,6 +729,8 @@ class VimCommand(CompoundRule):
                   RuleRef(ModelessCommand()),
                   RuleRef(NERDTreeCommand()),
                   RuleRef(ScrollCommand()),
+                  RuleRef(JumpCommand()),
+                  RuleRef(VimrcCommand()),
                 ], name='session')
               ]
 
