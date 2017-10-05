@@ -384,7 +384,10 @@ class PrimitiveMotion(MappingRule):
         'scree up': Text('gk'),
         'scree down': Text('gj'),
 
+        'top': Text('gg'),
         'wynac': Text('G'),
+        # 'G' used without count goes to the bottom, hence the alias
+        'bottom': Text('G'),
 
         'wynac top': Text('H'),
         'wynac toe': Text('L'),
@@ -644,6 +647,8 @@ class BufferCommand(MappingRule):
             'buff list': Key('colon, l, s, enter'),
             'buff <count>': Key('colon') + Text('b %(count)d\n'),
             'buff close': Key('colon') + Text('Bclose\n'),
+            # Requires a.vim plugin
+            'headers': Key('colon, A, enter'),
             }
     extras = [ruleDigitalInteger[3]]
 

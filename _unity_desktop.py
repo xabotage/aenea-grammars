@@ -49,6 +49,7 @@ class DashCommand(MappingRule):
 			'app <n>': Key('win:down, shift:down, shift:up, %(n)d, win:up'),
                         'terminal': Key('ca-t'),
                         'lock': Key('ca-l'),
+                        'quit': Key('c-q'),
 			}
 	extras = [
         IntegerRef('n', 0, 9),
