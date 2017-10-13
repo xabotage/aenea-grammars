@@ -466,7 +466,7 @@ ruleParameterizedMotion = RuleRef(
 
 class CountedMotion(NumericDelegateRule):
     spec = '[<count>] <motion>'
-    extras = [ruleDigitalInteger[3],
+    extras = [ruleDigitalInteger[5],
               Alternative([
                   rulePrimitiveMotion,
                   ruleParameterizedMotion,
@@ -581,7 +581,7 @@ class PrimitiveCommand(MappingRule):
         'vim chuck': Key('x'),
         '(vim undo | oops)': Key('u'),
         'vim redo': Key('c-r'),
-        'plap': Key('P'),
+        'plupp': Key('P'),
         'plop': Key('p'),
         'ditto': Text('.'),
         'ripple': 'macro',

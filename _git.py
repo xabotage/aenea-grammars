@@ -304,6 +304,7 @@ class GitPullRule(CompoundRule):
 pull_rule = RuleRef(name="pull_rule", rule=GitPullRule())
 
 
+# Quick stubs for rules that I haven't bothered to create additional options for yet.
 # Wrapped in Sequence class so that the nesting works out in the top level rule evaluation
 clone_rule = Sequence([Literal("clone", value="clone ")], name="clone_rule")
 remove_rule = Sequence([Literal("remove", value="rm ")], name="remove_rule")
@@ -329,7 +330,6 @@ class GitHelpRule(CompoundRule):
     extras = [Alternative(name='command', children=git_command)]
 
     def value(self, node):
-        print 'Value was called'
         val = ''
         try:
             val = node.children[0].children[0].children[1].children[0].children[0].value()

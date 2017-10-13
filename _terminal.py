@@ -48,12 +48,13 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     '(terminal|term) new [tab]': Key("cs-t"),
     '(terminal|term) (close|exit)': Key("c-c") + Text("exit") + Key("enter"),
     '(terminal|term) abort': Key("c-c"),
+    '(terminal|term) edit': Key("c-x") + Key("c-e"),
 
     'top': Text("top\n"),
     'hey top': Text("htop\n"),
     'jobs': Text("jobs\n"),
     'resume': Text("fg\n"),
-    'resume [<count>]': Text("fg \%%(count)d\n"),
+    'resume [<count>]': Text("fg %(count)d\n"),
 
     'auto comm': Key("tab:2"),
     'scan history': Key("c-r"),
