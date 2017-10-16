@@ -92,14 +92,14 @@ command_table = aenea.configuration.make_grammar_commands('multiedit', {
 
 class FormatRule(CompoundRule):
     spec = ('[upper | natural] ( proper | camel | rel-path | abs-path | score | sentence | '
-            'scope-resolve | jumble | dotword | dashword | natword | snakeword | brooding-narrative) [<dictation>]')
+            'scope-resolve | jumble | dotword | dashword | sayo | natword | snakeword | brooding-narrative) [<dictation>]')
     extras = [Dictation(name='dictation')]
 
     def value(self, node):
         words = node.words()
 
         uppercase = words[0] == 'upper'
-        lowercase = words[0] != 'natural'
+        lowercase = words[0] not in ('natural', 'sentence', 'sayo')
 
         if lowercase:
             words = [word.lower() for word in words]
@@ -110,6 +110,8 @@ class FormatRule(CompoundRule):
         if words[0].lower() in ('upper', 'natural'):
             del words[0]
 
+        # Saying 'natword' sucks, using 'sayo' as an alias
+        if words[0].lower() == 'sayo': words[0] = 'natword'
         function = getattr(aenea.format, 'format_%s' % words[0].lower())
         formatted = function(words[1:])
 
