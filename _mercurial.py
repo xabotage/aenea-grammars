@@ -56,13 +56,13 @@ class HgCommitRule(CompoundRule):
 commit_rule = RuleRef(name='commit_rule', rule=HgCommitRule())
 
 
-class HgStatusRuleOption(MappingRule):
+class HgStatusOption(MappingRule):
     exported = False
     mapping = aenea.configuration.make_grammar_commands('hg_status_options', {
         "all": "--all",
         # Add as needed
     })
-status_options = WrapInRepeatRule(HgStatusRuleOption(), 'status_options')
+status_options = WrapInRepeatRule(HgStatusOption(), 'status_options')
 
 
 class HgStatusRule(CompoundRule):
@@ -71,8 +71,63 @@ class HgStatusRule(CompoundRule):
     extras = [status_options]
 
     def value(self, node):
-        return "status " + recurse_values(node, [HgStatusRuleOption])
+        return "status " + recurse_values(node, [HgStatusOption])
 status_rule = RuleRef(name="status_rule", rule=HgStatusRule())
+
+
+class HgLogOption(MappingRule):
+    exported = False
+    mapping = aenea.configuration.make_grammar_commands('hg_log_options', {
+        "follow": "--follow ",
+        "keyword": "--keyword ",
+        "revision": "--rev ",
+        "user": "--user ",
+        "branch": "--branch ",
+        "patch": "--patch ",
+        "git": "--git ",
+        "limit": "--limit ",
+        "graph": "--graph ",
+        "all": "--all ",
+        # Add as needed
+    })
+log_options = WrapInRepeatRule(HgLogOption(), 'log_options')
+
+
+class HgLogRule(CompoundRule):
+    exported = False
+    spec = "log [<log_options>]"
+    extras = [log_options]
+
+    def value(self, node):
+        return "log " + recurse_values(node, [HgLogOption])
+log_rule = RuleRef(name="log_rule", rule=HgLogRule())
+
+
+class HgBookmarkOption(MappingRule):
+    exported = False
+    mapping = aenea.configuration.make_grammar_commands('hg_bookmark_options', {
+        'revision': '--rev ',
+        'force': '--force ',
+        'delete': '--delete ',
+        'strip': '--strip ',
+        'rename': '--rename ',
+        'inactive': '--inactive ',
+        'track': '--track ',
+        'untrack': '--untrack ',
+        'all': '--all ',
+        'remote': '--remote ',
+    })
+bookmark_options = WrapInRepeatRule(HgBookmarkOption(), 'bookmark_options')
+
+
+class HgBookmarkRule(CompoundRule):
+    exported = False
+    spec = "bookmark [<bookmark_options>]"
+    extras = [bookmark_options]
+
+    def value(self, node):
+        return "bookmark " + recurse_values(node, [HgBookmarkOption])
+bookmark_rule = RuleRef(name="bookmark_rule", rule=HgBookmarkRule())
 
 
 class HgPullOption(MappingRule):
@@ -89,14 +144,6 @@ class HgPullOption(MappingRule):
 pull_options = WrapInRepeatRule(HgPullOption(), 'pull_options')
 
 
-# Quick stubs for rules that I haven't bothered to create additional options for yet.
-# Wrapped in Sequence class so that the nesting works out in the top level rule evaluation
-remove_rule = Sequence([Literal("remove", value="remove ")], name="remove_rule")
-diff_rule = Sequence([Literal("diff", value="diff ")], name="diff_rule")
-shelve_rule = Sequence([Literal("shelf", value="shelve ")], name="shelve_rule")
-unshelve_rule = Sequence([Literal("unshelf", value="unshelve ")], name="unshelve_rule")
-
-
 class HgPullRule(CompoundRule):
     exported = False
     spec = "pull [<pull_options>]"
@@ -106,14 +153,23 @@ class HgPullRule(CompoundRule):
         return "pull " + recurse_values(node, [HgPullOption])
 pull_rule = RuleRef(name="pull_rule", rule=HgPullRule())
 
+
+# Quick stubs for rules that I haven't bothered to create additional options for yet.
+# Wrapped in Sequence class so that the nesting works out in the top level rule evaluation
+remove_rule = Sequence([Literal("remove", value="remove ")], name="remove_rule")
+diff_rule = Sequence([Literal("diff", value="diff ")], name="diff_rule")
+shelve_rule = Sequence([Literal("shelf", value="shelve ")], name="shelve_rule")
+unshelve_rule = Sequence([Literal("unshelf", value="unshelve ")], name="unshelve_rule")
+
+
 hg_commands = [
     #add_rule,
     commit_rule,
     #checkout_rule,
     #push_rule,
     status_rule,
-    #log_rule,
-    #branch_rule,
+    log_rule,
+    bookmark_rule,
     pull_rule,
     remove_rule,
     diff_rule,
