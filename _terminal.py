@@ -100,6 +100,8 @@ class ProgramMapping(MappingRule):
             'change mod': Text("chmod "),
             'grep': Text("grep "),
             'ack grep': Text("ack-grep "),
+            'eff bags': Text("fbgs "),
+            'tea bags': Text("tbgs "),
             'cat': Text("cat "),
             'less': Text("less "),
             'edit': Text("vim "),
