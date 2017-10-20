@@ -309,6 +309,7 @@ pull_rule = RuleRef(name="pull_rule", rule=GitPullRule())
 clone_rule = Sequence([Literal("clone", value="clone ")], name="clone_rule")
 remove_rule = Sequence([Literal("remove", value="rm ")], name="remove_rule")
 diff_rule = Sequence([Literal("diff", value="diff ")], name="diff_rule")
+stash_rule = Sequence([Literal("stash", value="stash ")], name="stash_rule")
 
 git_command = [
     add_rule,
