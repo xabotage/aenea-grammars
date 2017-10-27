@@ -91,6 +91,7 @@ command_table = aenea.configuration.make_grammar_commands('multiedit', {
 
 
 class FormatRule(CompoundRule):
+    exported = False
     spec = ('[upper | natural] ( proper | camel | rel-path | abs-path | score | sentence | '
             'scope-resolve | jumble | dotword | dashword | sayo | natword | snakeword | brooding-narrative) [<dictation>]')
     extras = [Dictation(name='dictation')]
@@ -122,6 +123,7 @@ format_rule = RuleRef(name='format_rule', rule=FormatRule(name='i'))
 
 # TODO: this can NOT be the right way to do this...
 class NumericDelegateRule(CompoundRule):
+    exported = False
     def value(self, node):
         delegates = node.children[0].children[0].children
         value = delegates[0].value()
@@ -159,6 +161,7 @@ def get_dynamic_count_rule():
     )
 
 class DigitInsertion(MappingRule):
+    exported = False
     mapping = dict(('dig ' + key, val) for (key, val) in aenea.misc.DIGITS.iteritems())
 
     def value(self, node):

@@ -637,6 +637,7 @@ class BufferCommand(MappingRule):
             'really save': Key('colon, w, exclamation, enter'),
             'save all': Key('colon, w, a, enter'),
             'quit': Key('colon, q, enter'),
+            'save and quit': Key('colon, x, enter'),
             'really quit': Key('colon, q, exclamation, enter'),
             'quit all': Key('colon, q, a, enter'),
             'suspend': Key('colon, s, u, s, enter'),

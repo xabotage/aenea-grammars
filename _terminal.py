@@ -99,7 +99,7 @@ class ProgramMapping(MappingRule):
             'change owner': Text("chown "),
             'change mod': Text("chmod "),
             'grep': Text("grep "),
-            'ack grep': Text("ack-grep "),
+            'ack grep': Text("ack "),
             'eff bags': Text("fbgs "),
             'tea bags': Text("tbgs "),
             'cat': Text("cat "),
