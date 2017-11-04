@@ -93,6 +93,8 @@ class ProgramMapping(MappingRule):
             'move': Text("mv "),
             'please remove': Text("rm "),
             'make': Text("make "),
+            'print echo': Text("echo "),
+            'change (mod|mode)': Text("chmod "),
             'ping': Text("ping "),
             'shell': Text("ssh "),
             'mosh': Text("mosh "),

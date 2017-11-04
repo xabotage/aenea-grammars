@@ -39,7 +39,7 @@ window_mapping = {
     'page forward': Key("escape, s-l"),
     'refresh': Key("c-r"),
     'link': Key("escape/100:2, f"),
-    'link new': Key("escape, s-f"),
+    'link new': Key("escape, e, t"),
 
     #  Moving around
     'more': Key("escape, d"),

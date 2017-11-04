@@ -9,40 +9,47 @@
 
 import aenea
 import aenea.configuration
-from aenea.lax import Key
-from aenea import IntegerRef
+from aenea import (
+        Key,
+        IntegerRef,
 import dragonfly
+import lib.contexts as ctx
 
-tmux_context = aenea.ProxyPlatformContext('linux')
-grammar = dragonfly.Grammar('tmux', context=tmux_context)
+grammar = dragonfly.Grammar('tmux', context=ctx.tmux_context)
+
+prefix = 'c-b'
 
 tmux_mapping = aenea.configuration.make_grammar_commands('tmux', {
-    'team (right|next)': Key("c-b, n"),
-    'team (left|previous)': Key("c-b, p"),
-    'team create': Key("c-b, c"),
-    'team <n>': Key("c-b, %(n)d"),
-    'team rename': Key("c-b, comma"),
-    'team exit': Key("c-b, backslash"),
-    'team detach': Key("c-b, d"),
+    'team (right|next)': Key("n"),
+    'team (left|previous)': Key("p"),
+    'team create': Key("c"),
+    'team <n>': Key("%(n)d"),
+    'team rename': Key("comma"),
+    'team exit': Key("backslash"),
+    'team detach': Key("d"),
 
-    'team [pane] vertical': Key("c-b, percent"),
-    'team [pane] horizontal': Key("c-b, dquote"),
-    'team swap': Key("c-b, o"),
-    'team pane up': Key("c-b, up"),
-    'team pane down': Key("c-b, down"),
-    'team pane left': Key("c-b, left"),
-    'team pane right': Key("c-b, right"),
-    'team pane close': Key("c-b, x")
+    'team [pane] vertical': Key("percent"),
+    'team [pane] horizontal': Key("dquote"),
+    'team swap': Key("o"),
+    'team pane up': Key("up"),
+    'team pane down': Key("down"),
+    'team pane left': Key("left"),
+    'team pane right': Key("right"),
+    'team pane close': Key("x")
 })
 
 
-class Mapping(dragonfly.MappingRule):
+class TmuxCommand(MappingRule):
     mapping = tmux_mapping
     extras = [
         IntegerRef('n', 0, 10)
     ]
 
-grammar.add_rule(Mapping())
+    def _process_recognition(self, node, extras):
+        global prefix
+        (Key(prefix) + node.value()).execute()
+
+grammar.add_rule(TmuxCommand())
 grammar.load()
 
 
