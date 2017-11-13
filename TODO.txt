@@ -9,7 +9,11 @@ x Learn and integrate better git grammar
 x Create nerd tree grammar
 x Make terminal grammar more structured
 x Integrate mouse grammar
-- Make vocabularies actually be dynamic
-- Create CrtlP grammar
-- Implement visual selection mode
 - Learn and integrate tmux grammar
+- Consolidate single letter mapping rules
+- Use terminal in vim mode
+- Make dynamic vocabularies actually be dynamic
+- Make nerd tree integrate smoother with vim
+- Create CrtlP/CommandT grammar
+- Implement visual selection mode
+- Better man page command in terminal grammar

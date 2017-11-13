@@ -57,7 +57,7 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     'resume [<count>]': Text("fg %(count)d\n"),
 
     'auto comm': Key("tab:2"),
-    'scan history': Key("c-r"),
+    'history': Key("c-r"),
 })
 
 class LetterMapping(MappingRule):
@@ -94,12 +94,13 @@ class ProgramMapping(MappingRule):
             'please remove': Text("rm "),
             'make': Text("make "),
             'print echo': Text("echo "),
-            'change (mod|mode)': Text("chmod "),
             'ping': Text("ping "),
             'shell': Text("ssh "),
             'mosh': Text("mosh "),
             'change owner': Text("chown "),
-            'change mod': Text("chmod "),
+            'change (mod|mode)': Text("chmod "),
+            'word count': Text("wc "),
+            'find': Text("find "),
             'grep': Text("grep "),
             'ack grep': Text("ack "),
             'eff bags': Text("fbgs "),
