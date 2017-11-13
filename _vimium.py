@@ -61,6 +61,8 @@ window_mapping = {
     #  Miscellaneous
     'address': Key("c-l"),
     'address <text>': Key("c-l") + Text("%(text)s"),
+    'zoom': Key("c-equals"),
+    'zoom out': Key("c-minus"),
 }
 
 gmail_mapping = {
