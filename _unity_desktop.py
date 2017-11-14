@@ -90,7 +90,7 @@ class WindowWorkspaceCommand(CompoundRule):
 
 class PutCommand(MappingRule):
     exported = False
-        mapping = { 'put window': Key('caw-right'), }
+    mapping = { 'put window': Key('caw-right'), }
 
 class UnityCommand(CompoundRule):
     spec = ('yoonie <desktop>')

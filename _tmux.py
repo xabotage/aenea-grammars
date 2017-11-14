@@ -12,6 +12,8 @@ import aenea.configuration
 from aenea import (
         Key,
         IntegerRef,
+        MappingRule,
+        )
 import dragonfly
 import lib.contexts as ctx
 
