@@ -39,15 +39,15 @@ window_mapping = {
     'page forward': Key("escape, s-l"),
     'refresh': Key("c-r"),
     'link': Key("escape/100:2, f"),
-    'link new': Key("escape, e, t"),
+    'link new': Key("escape, s-f"),
 
     #  Moving around
-    'more': Key("escape, d"),
-    'much more': Key("escape, d:2"),
-    'more <count>': Key("escape, d:%(count)d"),
-    'less': Key("escape, u"),
-    'much less': Key("escape, u:2"),
-    'less <count>': Key("escape, u:%(count)d"),
+    'more': Key("escape, c-d"),
+    'much more': Key("escape, c-d:2"),
+    'more <count>': Key("escape, c-d:%(count)d"),
+    'less': Key("escape, c-u"),
+    'much less': Key("escape, c-u:2"),
+    'less <count>': Key("escape, c-u:%(count)d"),
     'top': Key("escape, g, g"),
     'bottom': Key("escape, s-g"),
 
