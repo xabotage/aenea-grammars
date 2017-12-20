@@ -121,6 +121,60 @@ class FormatRule(CompoundRule):
 format_rule = RuleRef(name='format_rule', rule=FormatRule(name='i'))
 
 
+# TODO: fork aenea and stick this in aenea.misc
+quick_letter_mapping = {
+    'A': 'a',
+    'B': 'b',
+    'C': 'c',
+    'D': 'd',
+    'E': 'e',
+    'F': 'f',
+    'G': 'g',
+    'H': 'h',
+    'I': 'i',
+    'J': 'j',
+    'K': 'k',
+    'L': 'l',
+    'M': 'm',
+    'N': 'n',
+    'O': 'o',
+    'P': 'p',
+    'Q': 'q',
+    'R': 'r',
+    'S': 's',
+    'T': 't',
+    'U': 'u',
+    'V': 'v',
+    'W': 'w',
+    'X': 'x',
+    'Y': 'y',
+    'Z': 'z'
+    }
+
+
+class QuickLetterRule(CompoundRule):
+    exported = False
+    spec = '[cap|capital] <quick_letter>'
+    extras = [RuleRef(MappingRule(mapping=quick_letter_mapping), name='quick_letter')]
+
+    def value(self, node):
+        letter = node.children[0].children[0].children[1].value() #sigh
+        cap = node.words()[0] in ('cap', 'capital')
+        if cap: letter = letter.upper()
+        return letter
+
+class QuickSpellRule(CompoundRule):
+    exported = False
+    spec = 'letters <letters>'
+    extras = [Repetition(RuleRef(QuickLetterRule()), min=1, max=20, name='letters')]
+
+    def value(self, node):
+        letters = node.children[0].children[0].children[1].value() #sigh
+        word = ''
+        for l in letters: word += l
+        return Text(word)
+
+
 # TODO: this can NOT be the right way to do this...
 class NumericDelegateRule(CompoundRule):
     exported = False
@@ -205,6 +259,7 @@ def get_multiedit_single_action():
         RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping)),
         RuleRef(DigitInsertion(), name='DigitInsertion'),
         RuleRef(name='format_rule', rule=FormatRule(name='format_rule')),
+        RuleRef(QuickSpellRule(), name='spell_rule'),
         ])
 
 # Can only be used as the last element (as part of finishes), cannot be a
