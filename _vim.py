@@ -689,6 +689,7 @@ class ModelessCommand(MappingRule):
 class NERDTreeCommand(MappingRule):
     mapping = {
             'nerdy': Text(':NERDTreeToggle\n'),
+            'nerdy find': Text(':NERDTreeFind\n'),
             }
 
 class ScrollCommand(MappingRule):
