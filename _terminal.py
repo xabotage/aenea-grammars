@@ -97,6 +97,8 @@ class ProgramMapping(MappingRule):
             'ping': Text("ping "),
             'shell': Text("ssh "),
             'mosh': Text("mosh "),
+            'curl': Text("curl "),
+            'web get': Text("wget "),
             'change owner': Text("chown "),
             'change (mod|mode)': Text("chmod "),
             'word count': Text("wc "),
