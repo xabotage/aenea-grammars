@@ -17,3 +17,6 @@ x Integrate mouse grammar
 - Create CrtlP/CommandT grammar
 - Implement visual selection mode
 - Better man page command in terminal grammar
+
+Things to remember:
+TypeError: The grammar object a Dragonfly rule cannot be changed after it has been set (Grammar(some_grammar) != Grammar(some_other_grammar)) - This probably means that in one of my custom rule classes, I set the static 'extras' variable to contain a rule.

@@ -152,10 +152,26 @@ quick_letter_mapping = {
     }
 
 
+# Ugly workaround since dragonfly whines when a rule is owned by
+# more than one grammar
+def generateQuickSpellExtras():
+    return [Repetition(
+        RuleRef(
+            QuickLetterRule(extras=[RuleRef(
+                MappingRule(mapping=quick_letter_mapping),
+                name='quick_letter'
+                )])
+            ),
+        min=1,
+        max=20,
+        name='letters'
+        )]
+
+
 class QuickLetterRule(CompoundRule):
     exported = False
     spec = '[cap|capital] <quick_letter>'
-    extras = [RuleRef(MappingRule(mapping=quick_letter_mapping), name='quick_letter')]
+    # see generateQuickSpellExtras for <quick_letter>
 
     def value(self, node):
         letter = node.children[0].children[0].children[1].value() #sigh
@@ -166,7 +182,7 @@ class QuickLetterRule(CompoundRule):
 class QuickSpellRule(CompoundRule):
     exported = False
     spec = 'letters <letters>'
-    extras = [Repetition(RuleRef(QuickLetterRule()), min=1, max=20, name='letters')]
+    # see generateQuickSpellExtras for <letters>
 
     def value(self, node):
         letters = node.children[0].children[0].children[1].value() #sigh
@@ -259,7 +275,7 @@ def get_multiedit_single_action():
         RuleRef(name='x', rule=MappingRule(name='t', mapping=alphabet_mapping)),
         RuleRef(DigitInsertion(), name='DigitInsertion'),
         RuleRef(name='format_rule', rule=FormatRule(name='format_rule')),
-        RuleRef(QuickSpellRule(), name='spell_rule'),
+        RuleRef(QuickSpellRule(extras=generateQuickSpellExtras()), name='spell_rule'),
         ])
 
 # Can only be used as the last element (as part of finishes), cannot be a
