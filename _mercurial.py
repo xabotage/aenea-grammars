@@ -130,6 +130,31 @@ class HgBookmarkRule(CompoundRule):
 bookmark_rule = RuleRef(name="bookmark_rule", rule=HgBookmarkRule())
 
 
+class HgUpdateOption(MappingRule):
+    exported = False
+    mapping = aenea.configuration.make_grammar_commands('hg_update_options', {
+        'revision': '--rev ',
+        'clean': '--clean ',
+        'check': '--check ',
+        'merge': '--merge ',
+        'inactive': '--inactive ',
+        'date': '--date ',
+        'tool': '--tool ',
+        'bookmark': '--bookmark ',
+    })
+update_options = WrapInRepeatRule(HgUpdateOption(), 'update_options')
+
+
+class HgUpdateRule(CompoundRule):
+    exported = False
+    spec = "update [<update_options>]"
+    extras = [update_options]
+
+    def value(self, node):
+        return "update " + recurse_values(node, [HgUpdateOption])
+update_rule = RuleRef(name="update_rule", rule=HgUpdateRule())
+
+
 class HgPullOption(MappingRule):
     exported = False
     mapping = aenea.configuration.make_grammar_commands(
@@ -175,6 +200,7 @@ hg_commands = [
     diff_rule,
     shelve_rule,
     unshelve_rule,
+    update_rule,
 ]
 
 class HgHelpRule(CompoundRule):
