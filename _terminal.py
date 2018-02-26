@@ -50,11 +50,11 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     '(terminal|term) abort': Key("c-c"),
     '(terminal|term) edit': Key("c-x") + Key("c-e"),
 
-    'top': Text("top\n"),
-    'hey top': Text("htop\n"),
-    'jobs': Text("jobs\n"),
-    'resume': Text("fg\n"),
-    'resume [<count>]': Text("fg %(count)d\n"),
+    'top': Text("top") + Key("enter"),
+    'hey top': Text("htop") + Key("enter"),
+    'jobs': Text("jobs") + Key("enter"),
+    'resume': Text("fg") + Key("enter"),
+    'resume [<count>]': Text("fg %(count)d") + Key("enter"),
 
     'auto comm': Key("tab:2"),
     'history': Key("c-r"),
