@@ -18,4 +18,4 @@ atom_context = aenea.wrappers.AeneaContext(
 
 terminal_context = aenea.ProxyCustomAppContext(executable="gnome-terminal")
 
-tmux_context = aenea.ProxyAppContext(match='regex', title='\d:\d:\w*')
+tmux_context = aenea.ProxyAppContext(match='regex', title='.*\d+:\d+\.\d+.*')
