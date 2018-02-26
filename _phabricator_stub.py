@@ -27,6 +27,8 @@ class ArcRule(CompoundRule):
         'diff': 'diff',
         'canary': 'canary ',
         'land': 'land',
+        'lint': 'lint',
+        'unit': 'unit',
         })]
 
     def _process_recognition(self, node, extras):
