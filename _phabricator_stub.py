@@ -19,6 +19,7 @@ from aenea import (
 import lib.contexts as ctx
 
 class ArcRule(CompoundRule):
+    exported = False
     spec = 'arc <command>'
     extras = [Choice('command', {
         'pull': 'pull',
