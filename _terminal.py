@@ -49,6 +49,8 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     '(terminal|term) (close|exit)': Key("c-c") + Text("exit") + Key("enter"),
     '(terminal|term) abort': Key("c-c"),
     '(terminal|term) edit': Key("c-x") + Key("c-e"),
+    '(terminal|term) copy': Key("cs-c"),
+    '(terminal|term) paste': Key("cs-v"),
 
     'top': Text("top") + Key("enter"),
     'hey top': Text("htop") + Key("enter"),
