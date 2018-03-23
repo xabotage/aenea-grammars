@@ -1,6 +1,6 @@
 {
     "name": "python",
-    "tags": ["vim.insertions.code"],
+    "tags": [],
     "vocabulary": {
         "values":            "values",
         "get atter":         "getattr",
