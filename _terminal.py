@@ -57,6 +57,7 @@ terminal_mapping = aenea.configuration.make_grammar_commands('terminal', {
     'jobs': Text("jobs") + Key("enter"),
     'resume': Text("fg") + Key("enter"),
     'resume [<count>]': Text("fg %(count)d") + Key("enter"),
+    'comment': Key("a-hash"),
 
     'auto comm': Key("tab:2"),
     'history': Key("c-r"),
